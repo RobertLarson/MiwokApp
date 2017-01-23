@@ -1,26 +1,30 @@
 package com.example.android.miwok;
 
+
 import android.content.Context;
-import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class NumbersActivity extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class ColorsFragment extends Fragment {
+
     private ArrayList<Word> words = new ArrayList<Word>();
 
     private MediaPlayer mMediaPlayer = null;
     private AudioManager mAudioManager = null;
-
     private MediaPlayer.OnCompletionListener mOnCompletionListener = new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
@@ -57,31 +61,37 @@ public class NumbersActivity extends AppCompatActivity {
                     }
                 }
             };
+
+    public ColorsFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.word_list);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.word_list, container, false);
+
         //getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager)getActivity().getSystemService(Context.AUDIO_SERVICE);
 
-        words.add(new Word("one", "lutti", R.raw.number_one, R.drawable.number_one));
-        words.add(new Word("two", "otiiko", R.raw.number_two, R.drawable.number_two));
-        words.add(new Word("three", "tolookosu", R.raw.number_three, R.drawable.number_three));
-        words.add(new Word("four", "oyyisa", R.raw.number_four, R.drawable.number_four));
-        words.add(new Word("five", "massokka", R.raw.number_five, R.drawable.number_five));
-        words.add(new Word("six", "temmokka", R.raw.number_six, R.drawable.number_six));
-        words.add(new Word("seven", "kenekaku", R.raw.number_seven, R.drawable.number_seven));
-        words.add(new Word("eight", "kawinta", R.raw.number_eight, R.drawable.number_eight));
-        words.add(new Word("nine", "wo'e", R.raw.number_nine, R.drawable.number_nine));
-        words.add(new Word("ten", "na'aacha", R.raw.number_ten, R.drawable.number_ten));
+        words.add(new Word("red", "wetetti", R.raw.color_red, R.drawable.color_red));
+        words.add(new Word("green", "chokokki", R.raw.color_green, R.drawable.color_green));
+        words.add(new Word("brown", "takaakki", R.raw.color_brown, R.drawable.color_brown));
+        words.add(new Word("gray", "topoppi", R.raw.color_gray, R.drawable.color_gray));
+        words.add(new Word("black", "kululli", R.raw.color_black, R.drawable.color_black));
+        words.add(new Word("white", "kelelli", R.raw.color_white, R.drawable.color_white));
+        words.add(new Word("dusty yellow", "topiise", R.raw.color_dusty_yellow, R.drawable.color_dusty_yellow));
+        words.add(new Word("mustard yellow", "chiwiite", R.raw.color_mustard_yellow, R.drawable.color_mustard_yellow));
 
-        WordAdapter itemsAdapter = new WordAdapter(this, words, R.color.category_numbers);
+        WordAdapter itemsAdapter =
+                new WordAdapter((AppCompatActivity)getActivity(), words, R.color.category_colors);
 
-        ListView listView = (ListView) findViewById(R.id.list);
+        ListView listView = (ListView) rootView.findViewById(R.id.list);
 
         listView.setAdapter(itemsAdapter);
-        listView.setBackgroundColor(getResources().getColor(R.color.category_numbers));
+        listView.setBackgroundColor(getResources().getColor(R.color.category_colors));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -94,18 +104,22 @@ public class NumbersActivity extends AppCompatActivity {
                                         AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
 
                 if(result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                    mMediaPlayer = MediaPlayer.create(NumbersActivity.this, word.getAudioResourceId());
+                    mMediaPlayer = MediaPlayer.create(getActivity(), word.getAudioResourceId());
                     mMediaPlayer.start();
                     mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
                 }
             }
         });
 
+        return rootView;
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
+
+        // When the activity is stopped, release the media player resources because we won't
+        // be playing any more sounds.
         releaseMediaPlayer();
     }
 
@@ -128,14 +142,4 @@ public class NumbersActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }
