@@ -32,11 +32,11 @@ import static android.net.wifi.p2p.nsd.WifiP2pServiceRequest.newInstance;
  */
 public class CategoryAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 4;
-    private String tabTitles[] = new String[] { "Numbers", "Family", "Colors", "Phrases" };
-    private Context context;
+    private Context mContext;
 
-    public CategoryAdapter(FragmentManager fm) {
+    public CategoryAdapter(Context context, FragmentManager fm) {
         super(fm);
+        mContext = context;
     }
 
     @Override
@@ -59,9 +59,17 @@ public class CategoryAdapter extends FragmentPagerAdapter {
     }
 
 
+
     @Override
     public CharSequence getPageTitle(int position) {
-        // Generate title based on item position
-        return tabTitles[position];
+        if (position == 0) {
+            return mContext.getString(R.string.category_numbers);
+        } else if (position == 1) {
+            return mContext.getString(R.string.category_family);
+        } else if (position == 2) {
+            return mContext.getString(R.string.category_colors);
+        } else {
+            return mContext.getString(R.string.category_phrases);
+        }
     }
 }
